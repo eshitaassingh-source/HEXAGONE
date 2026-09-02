@@ -7,6 +7,7 @@ PERSON_CLASS_ID = 0
 VEHICLE_CLASS_IDS = [2, 3, 5, 7]  # car, motorcycle, bus, truck (COCO classes)
 FENCE_X = 320
 track_last_side = {}
+alerted_vehicles = set()
 
 
 def run(source, model_path="yolov8n.pt", conf=0.4, save_path=None):
@@ -55,6 +56,16 @@ def run(source, model_path="yolov8n.pt", conf=0.4, save_path=None):
                     box_color = (0, 255, 0)
                 else:
                     box_color = (255, 165, 0)
+                    if track_id not in alerted_vehicles:
+                        alerted_vehicles.add(track_id)
+                        try:
+                            requests.post(
+                                "http://127.0.0.1:8000/alert",
+                                json={"track_id": int(track_id), "alert_type": f"vehicle_detected_{cls_name}"},
+                                timeout=1
+                            )
+                        except Exception as e:
+                            print(f"Could not send vehicle alert to backend: {e}")
 
                 cv2.rectangle(frame, (x1, y1), (x2, y2), box_color, 2)
                 label = f"{cls_name.capitalize()} {track_id} ({c:.2f})"
