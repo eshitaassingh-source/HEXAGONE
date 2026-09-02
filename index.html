@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IBVAP - Intelligent Border Video Analytics Platform</title>
+  <!-- Google Fonts: Rajdhani & Share Tech Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="command-grid-overlay"></div>
+  
+  <div class="dashboard-wrapper">
+    <!-- SYSTEM HEADER -->
+    <header class="status-header">
+      <div class="header-left">
+        <div class="brand-insignia">
+          <span class="radar-dot"></span>
+          <span class="insignia-text">IBVAP</span>
+        </div>
+        <div class="title-block">
+          <h1>INTELLIGENT BORDER VIDEO ANALYTICS PLATFORM</h1>
+          <span class="subtitle">TACTICAL SURVEILLANCE & THREAT DETECTION SYSTEM</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Live System Clock -->
+        <div class="hud-box clock-box">
+          <span class="hud-label">SYSTEM TIME</span>
+          <span id="live-clock" class="hud-value mono">--:--:--</span>
+        </div>
+
+        <!-- Total Alerts Counter -->
+        <div class="hud-box total-alerts-box">
+          <span class="hud-label">TOTAL ALERTS</span>
+          <span id="total-alert-badge" class="hud-value mono text-warning">0</span>
+        </div>
+
+        <!-- System Status Badge -->
+        <div class="hud-box status-badge-box">
+          <span class="hud-label">SYSTEM STATUS</span>
+          <div id="system-status-badge" class="status-badge offline">
+            <span class="status-beacon"></span>
+            <span id="status-text" class="status-text mono">OFFLINE</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- STATS STRIP -->
+    <section class="stats-strip">
+      <div class="stat-card">
+        <div class="stat-corner top-left"></div>
+        <div class="stat-corner bottom-right"></div>
+        <div class="stat-label">BACKEND CONNECTION</div>
+        <div class="stat-value-group">
+          <span id="stat-backend-status" class="stat-value mono text-danger">CHECKING...</span>
+          <span id="stat-ping-time" class="stat-subtext mono">ENDPOINT: 127.0.0.1:8000</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-corner top-left"></div>
+        <div class="stat-corner bottom-right"></div>
+        <div class="stat-label">FENCE CROSSINGS TODAY</div>
+        <div class="stat-value-group">
+          <span id="stat-fence-crossings" class="stat-value mono text-alert">0</span>
+          <span class="stat-subtext mono">SURVEILLANCE SECTOR 01</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-corner top-left"></div>
+        <div class="stat-corner bottom-right"></div>
+        <div class="stat-label">LAST TRACKED PERSON ID</div>
+        <div class="stat-value-group">
+          <span id="stat-last-track-id" class="stat-value mono text-cyan">N/A</span>
+          <span class="stat-subtext mono">TARGET IDENTIFIER</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-corner top-left"></div>
+        <div class="stat-corner bottom-right"></div>
+        <div class="stat-label">POLLING FREQUENCY</div>
+        <div class="stat-value-group">
+          <span class="stat-value mono text-green">2.5s</span>
+          <span class="stat-subtext mono">REAL-TIME SYNC ACTIVE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN WORKSPACE CONTENT -->
+    <main class="main-workspace">
+      <!-- LEFT: CAMERA FEED PLACEHOLDER PANEL -->
+      <section class="feed-placeholder-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="corner-bracket">[</span>
+            <h2>PRIMARY OPTICAL FEED</h2>
+            <span class="corner-bracket">]</span>
+          </div>
+          <div class="panel-meta mono">
+            <span>FEED ID: CAM-01</span>
+            <span class="separator">|</span>
+            <span>SECTOR: 04-NORTH FENCE</span>
+          </div>
+        </div>
+
+        <div class="viewport-frame">
+          <div class="viewport-scanlines"></div>
+          <div class="viewport-hud-overlay">
+            <!-- HUD Reticle and Crosshairs -->
+            <div class="hud-reticle">
+              <div class="crosshair-center"></div>
+              <div class="reticle-circle"></div>
+              <div class="reticle-sweep"></div>
+            </div>
+            
+            <div class="hud-corner-tag top-l">SYS.REC // 1080P</div>
+            <div class="hud-corner-tag top-r">OPTICAL SENSOR A1</div>
+            <div class="hud-corner-tag bottom-l">LAT: 31°14'22"N</div>
+            <div class="hud-corner-tag bottom-r">LON: 75°23'11"E</div>
+
+            <!-- Central Placeholder Badge -->
+            <div class="coming-soon-badge">
+              <div class="alert-icon-wrap">
+                <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 class="placeholder-title">Live Camera Feed — Coming Soon</h3>
+              <p class="placeholder-sub">STREAM OFFLINE // AWAITING VIDEO PIPELINE INTEGRATION</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: LIVE ALERTS FEED -->
+      <section class="alerts-feed-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="corner-bracket">[</span>
+            <h2>LIVE ALERTS FEED</h2>
+            <span class="corner-bracket">]</span>
+          </div>
+          <div class="feed-status-tag mono">
+            <span class="pulse-dot"></span>
+            <span id="alerts-poll-label">REALTIME</span>
+          </div>
+        </div>
+
+        <div class="alerts-scroll-container" id="alerts-container">
+          <!-- Dynamically populated or empty state -->
+          <div class="feed-empty-state">
+            <div class="empty-radar-ping"></div>
+            <p class="empty-title mono">NO ACTIVE ALERTS DETECTED</p>
+            <p class="empty-sub mono">MONITORING BORDER PERIMETER FOR ANOMALIES...</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
