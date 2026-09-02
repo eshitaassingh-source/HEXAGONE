@@ -1,23 +1,11 @@
-"""
-IBVAP - Human Detection & Tracking module
-Detects people in a video/CCTV stream and draws a persistent bounding box
-with an ID number on each person, so the same box "follows" the same
-person across frames.
-
-Setup:
-    pip install ultralytics opencv-python
-
-Run:
-    python human_tracker.py --source 0                 # webcam
-    python human_tracker.py --source path/to/video.mp4  # video file
-    python human_tracker.py --source rtsp://<cam_ip>/stream  # IP CCTV stream
-"""
-
 import argparse
 import cv2
+import requests
 from ultralytics import YOLO
 
 PERSON_CLASS_ID = 0
+FENCE_X = 320
+track_last_side = {}
 
 
 def run(source, model_path="yolov8n.pt", conf=0.4, save_path=None):
@@ -35,6 +23,9 @@ def run(source, model_path="yolov8n.pt", conf=0.4, save_path=None):
     ):
         frame = result.orig_img
 
+        h, w = frame.shape[:2]
+        cv2.line(frame, (FENCE_X, 0), (FENCE_X, h), (0, 0, 255), 2)
+
         if result.boxes is not None and result.boxes.id is not None:
             boxes = result.boxes.xyxy.cpu().numpy()
             track_ids = result.boxes.id.cpu().numpy().astype(int)
@@ -42,6 +33,22 @@ def run(source, model_path="yolov8n.pt", conf=0.4, save_path=None):
 
             for box, track_id, c in zip(boxes, track_ids, confs):
                 x1, y1, x2, y2 = map(int, box)
+
+                cx = (x1 + x2) // 2
+                current_side = "left" if cx < FENCE_X else "right"
+                last_side = track_last_side.get(track_id)
+                if last_side is not None and last_side != current_side:
+                    print(f"ALERT: Person {track_id} crossed the fence! ({last_side} -> {current_side})")
+                    try:
+                        requests.post(
+                            "http://127.0.0.1:8000/alert",
+                            json={"track_id": int(track_id), "alert_type": "fence_crossing"},
+                            timeout=1
+                            )
+                    except Exception as e:
+                        print(f"Could not send alert to backend: {e}")
+                track_last_side[track_id] = current_side
+
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 label = f"Person {track_id} ({c:.2f})"
                 cv2.putText(
@@ -68,10 +75,10 @@ def run(source, model_path="yolov8n.pt", conf=0.4, save_path=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="IBVAP human detection & tracking")
-    parser.add_argument("--source", default="0", help="0 for webcam, or path/URL to video/RTSP stream")
-    parser.add_argument("--model", default="yolov8n.pt", help="YOLOv8 weights to use")
-    parser.add_argument("--conf", type=float, default=0.4, help="detection confidence threshold")
-    parser.add_argument("--save", default=None, help="optional path to save annotated output video")
+    parser.add_argument("--source", default="0")
+    parser.add_argument("--model", default="yolov8n.pt")
+    parser.add_argument("--conf", type=float, default=0.4)
+    parser.add_argument("--save", default=None)
     args = parser.parse_args()
 
     source = int(args.source) if args.source.isdigit() else args.source
