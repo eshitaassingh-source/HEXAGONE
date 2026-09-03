@@ -2,7 +2,7 @@
 
 AI-based video analytics platform for border surveillance using existing CCTV infrastructure.
 
-## Features (in progress)
+## Features 
 - Human detection & tracking
 - Vehicle detection
 - Virtual fence intrusion detection
